@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora BH</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="titulo">CALCULADORA BH</h1>
+        
+        <div class="painel-controles">
+            <!-- Campo Múltiplo -->
+            <div class="campo">
+                <label class="rotulo">MÚLTIPLO</label>
+                <input type="number" id="multiplo" class="entrada" value="1" min="1">
+            </div>
+            
+            <!-- Campo Hora Inicial -->
+            <div class="campo">
+                <label class="rotulo">HORA INICIAL</label>
+                <div class="campo-hora">
+                    <span class="icone">🕐</span>
+                    <input type="text" id="horaInicial" class="entrada-hora" placeholder="HH:MM:SS">
+                </div>
+            </div>
+            
+            <!-- Campo Hora Final -->
+            <div class="campo">
+                <label class="rotulo">HORA FINAL</label>
+                <div class="campo-hora">
+                    <span class="icone">🕐</span>
+                    <input type="text" id="horaFinal" class="entrada-hora" placeholder="HH:MM:SS">
+                </div>
+            </div>
+            
+            <!-- Display Resultado -->
+            <div class="campo">
+                <label class="rotulo">TEMPO DECORRIDO</label>
+                <div class="display-resultado">
+                    <span class="icone">⏱</span>
+                    <span id="resultado" class="texto-resultado">00:00:00</span>
+                    <button id="btnCopiar" class="btn-copiar" title="Copiar">📋</button>
+                </div>
+            </div>
+        </div>
+        
+        <button id="btnCalcular" class="btn-calcular">CALCULAR TEMPO</button>
+        
+        <!-- Seção Histórico -->
+        <div class="secao-historico">
+            <div class="cabecalho-historico">
+                <h2 class="subtitulo">HISTÓRICO RECENTE</h2>
+                <button id="btnLimparHistorico" class="btn-limpar-historico">Limpar Histórico</button>
+            </div>
+            <div class="tabela-wrapper">
+                <table class="tabela">
+                    <thead>
+                        <tr>
+                            <th>DATA/HORA</th>
+                            <th>MÚLTIPLO</th>
+                            <th>INÍCIO</th>
+                            <th>FIM</th>
+                            <th>DECORRIDO</th>
+                            <th class="coluna-acoes"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaHistorico">
+                        <tr>
+                            <td colspan="6" class="vazio">Nenhum cálculo realizado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
