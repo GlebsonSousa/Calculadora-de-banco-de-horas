@@ -1,11 +1,10 @@
-// Configurações e Elementos
-const CHAVE_STORAGE = 'calc_bh_v3';
 const elMult = document.getElementById('multiplo');
 const elIni = document.getElementById('horaInicial');
 const elFim = document.getElementById('horaFinal');
 const elRes = document.getElementById('resultado');
 const elProj = document.getElementById('saidaProjetada');
 const elTab = document.getElementById('tabelaHistorico');
+const CHAVE_STORAGE = 'calc_bh_data';
 
 document.addEventListener('DOMContentLoaded', () => {
     configurarInputs();
@@ -14,49 +13,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function configurarInputs() {
     document.getElementById('btnCalcular').onclick = calcular;
-    document.getElementById('btnCopiar').onclick = copiar;
-    document.getElementById('btnLimparHistorico').onclick = limparHist;
+    document.getElementById('btnCopiar').onclick = () => copiarTexto(elRes.textContent, 'btnCopiar');
+    document.getElementById('btnCopiarSaida').onclick = () => copiarTexto(elProj.textContent, 'btnCopiarSaida');
+    document.getElementById('btnLimparHistorico').onclick = limparTudo;
 
     [elIni, elFim].forEach(campo => {
-        campo.addEventListener('keydown', (e) => {
-            campo.dataset.posCaret = campo.selectionStart;
-            campo.dataset.lenAntes = campo.value.length;
+        campo.addEventListener('keydown', () => {
+            campo.dataset.caret = campo.selectionStart;
+            campo.dataset.len = campo.value.length;
         });
-
-        campo.addEventListener('input', (e) => {
-            let v = campo.value.replace(/\D/g, '');
-            if (v === "" && e.inputType?.includes('delete')) { campo.value = ""; return; }
-            if (v.length > 6) v = v.slice(0, 6);
-
-            // Validação de limites (Máx 23:59:59)
-            let hh = v.slice(0, 2);
-            let mm = v.slice(2, 4);
-            let ss = v.slice(4, 6);
-            if (hh.length === 2 && parseInt(hh) > 23) hh = "23";
-            if (mm.length === 2 && parseInt(mm) > 59) mm = "59";
-            if (ss.length === 2 && parseInt(ss) > 59) ss = "59";
-            v = hh + mm + ss;
-
-            // Formatação
-            let f = "";
-            if (v.length > 0) {
-                f = v.slice(0, 2);
-                if (v.length > 2) f += ":" + v.slice(2, 4);
-                if (v.length > 4) f += ":" + v.slice(4, 6);
-            }
-
-            // Reposicionamento do cursor
-            const caret = parseInt(campo.dataset.posCaret || "0");
-            const antes = parseInt(campo.dataset.lenAntes || "0");
-            campo.value = f;
-            let ajuste = f.length > antes ? (f.length - antes) : 0;
-            let novaPos = caret + ajuste;
-            if (e.inputType !== 'deleteContentBackward' && (novaPos === 2 || novaPos === 5)) novaPos++;
-            campo.setSelectionRange(novaPos, novaPos);
-        });
-
+        campo.addEventListener('input', (e) => tratarMascara(e, campo));
         campo.addEventListener('blur', () => normalizar(campo));
     });
+}
+
+function tratarMascara(e, campo) {
+    let v = campo.value.replace(/\D/g, '');
+    if (v === "" && e.inputType?.includes('delete')) { campo.value = ""; return; }
+    
+    if (v.length > 6) v = v.slice(0, 6);
+
+    let hh = v.slice(0, 2);
+    let mm = v.slice(2, 4);
+    let ss = v.slice(4, 6);
+
+    // Validação de Limites
+    if (hh.length === 2 && parseInt(hh) > 23) hh = "23";
+    if (mm.length === 2 && parseInt(mm) > 59) mm = "59";
+    if (ss.length === 2 && parseInt(ss) > 59) ss = "59";
+
+    v = hh + mm + ss;
+    let f = v.slice(0, 2);
+    if (v.length > 2) f += ":" + v.slice(2, 4);
+    if (v.length > 4) f += ":" + v.slice(4, 6);
+
+    const caret = parseInt(campo.dataset.caret || "0");
+    const lenAntes = parseInt(campo.dataset.len || "0");
+    campo.value = f;
+
+    let novaPos = caret + (f.length > lenAntes ? (f.length - lenAntes) : 0);
+    if (e.inputType !== 'deleteContentBackward' && (novaPos === 2 || novaPos === 5)) novaPos++;
+    campo.setSelectionRange(novaPos, novaPos);
 }
 
 function normalizar(campo) {
@@ -69,27 +66,19 @@ function normalizar(campo) {
 }
 
 function calcular() {
-    normalizar(elIni);
-    normalizar(elFim);
-
+    normalizar(elIni); normalizar(elFim);
     const m = parseFloat(elMult.value) || 1;
     const sIni = toSec(elIni.value);
     const sFim = toSec(elFim.value);
 
-    // Diferença real
     let diff = sFim - sIni;
-    if (diff < 0) diff += 86400; 
+    if (diff < 0) diff += 86400;
 
-    // Tempo decorrido com múltiplo
-    const sRes = Math.round(diff * m);
-    const resForm = fromSec(sRes);
-    elRes.textContent = resForm;
+    const sTotal = Math.round(diff * m);
+    elRes.textContent = fromSec(sTotal);
+    elProj.textContent = fromSec((sIni + sTotal) % 86400);
 
-    // Saída Projetada (Início + Tempo Calculado)
-    const sProj = (sIni + sRes) % 86400;
-    elProj.textContent = fromSec(sProj);
-
-    salvar(m, elIni.value, elFim.value, resForm);
+    salvar(m, elIni.value, elFim.value, elRes.textContent);
 }
 
 function toSec(h) {
@@ -104,17 +93,18 @@ function fromSec(s) {
     return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
 }
 
-function copiar() {
-    navigator.clipboard.writeText(elRes.textContent);
-    const b = document.getElementById('btnCopiar');
-    b.textContent = "✓";
-    setTimeout(() => b.textContent = "📋", 1000);
+function copiarTexto(texto, btnId) {
+    navigator.clipboard.writeText(texto);
+    const btn = document.getElementById(btnId);
+    const old = btn.textContent;
+    btn.textContent = "✓";
+    setTimeout(() => btn.textContent = old, 1000);
 }
 
 function salvar(m, i, f, r) {
-    const obj = { data: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), m, i, f, r, id: Date.now() };
+    const item = { data: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), m, i, f, r, id: Date.now() };
     let h = JSON.parse(localStorage.getItem(CHAVE_STORAGE) || "[]");
-    h.unshift(obj);
+    h.unshift(item);
     localStorage.setItem(CHAVE_STORAGE, JSON.stringify(h.slice(0, 10)));
     renderizarHistorico();
 }
@@ -126,7 +116,7 @@ function renderizarHistorico() {
             <td>${i.data}</td><td>${i.m}</td><td>${i.i}</td><td>${i.f}</td><td>${i.r}</td>
             <td><button class="btn-excluir" onclick="remover(${i.id})">✕</button></td>
         </tr>
-    `).join('') || '<tr><td colspan="6" class="vazio">Nenhum cálculo realizado</td></tr>';
+    `).join('') || '<tr><td colspan="6" class="vazio">Nenhum cálculo</td></tr>';
 }
 
 window.remover = (id) => {
@@ -135,9 +125,6 @@ window.remover = (id) => {
     renderizarHistorico();
 };
 
-function limparHist() {
-    if (confirm("Limpar todo o histórico?")) {
-        localStorage.removeItem(CHAVE_STORAGE);
-        renderizarHistorico();
-    }
+function limparTudo() {
+    if (confirm("Limpar histórico?")) { localStorage.removeItem(CHAVE_STORAGE); renderizarHistorico(); }
 }
