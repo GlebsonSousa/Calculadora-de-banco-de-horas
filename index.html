@@ -13,14 +13,14 @@
         <div class="painel-controles">
             <div class="campo">
                 <label class="rotulo">MÚLTIPLO</label>
-                <input type="number" id="multiplo" class="entrada" value="1" step="0.1" min="0">
+                <input type="number" id="multiplo" class="entrada" value="1" step="0.1" min="0" inputmode="decimal">
             </div>
             
             <div class="campo">
                 <label class="rotulo">HORA INICIAL</label>
                 <div class="campo-hora">
                     <span class="icone">🕒</span>
-                    <input type="text" id="horaInicial" class="entrada-hora" placeholder="HH:MM:SS" maxlength="8">
+                    <input type="text" id="horaInicial" class="entrada-hora" placeholder="HH:MM:SS" maxlength="8" inputmode="numeric">
                 </div>
             </div>
             
@@ -28,15 +28,15 @@
                 <label class="rotulo">HORA FINAL</label>
                 <div class="campo-hora">
                     <span class="icone">🕒</span>
-                    <input type="text" id="horaFinal" class="entrada-hora" placeholder="HH:MM:SS" maxlength="8">
+                    <input type="text" id="horaFinal" class="entrada-hora" placeholder="HH:MM:SS" maxlength="8" inputmode="numeric">
                 </div>
                 <div class="previsao-saida">
-                    <div>Saída Projetada: <strong id="saidaProjetada">00:00:00</strong></div>
+                    <div class="texto-previsao">Saída Projetada: <strong id="saidaProjetada">00:00:00</strong></div>
                     <button id="btnCopiarSaida" class="btn-copiar-mini" title="Copiar Saída">📋</button>
                 </div>
             </div>
             
-            <div class="campo">
+            <div class="campo destaque">
                 <label class="rotulo">TEMPO DECORRIDO</label>
                 <div class="display-resultado">
                     <span class="icone">⏱</span>
@@ -57,19 +57,16 @@
                 <table class="tabela">
                     <thead>
                         <tr>
-                            <th>DATA/HORA</th>
+                            <th>DATA</th>
                             <th>MULT.</th>
                             <th>INÍCIO</th>
                             <th>FIM</th>
-                            <th>DECORRIDO</th>
+                            <th>RESULTADO</th>
                             <th class="coluna-acoes"></th>
                         </tr>
                     </thead>
                     <tbody id="tabelaHistorico">
-                        <tr>
-                            <td colspan="6" class="vazio">Nenhum cálculo realizado</td>
-                        </tr>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
