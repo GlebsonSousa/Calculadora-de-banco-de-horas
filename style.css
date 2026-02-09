@@ -1,8 +1,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: #f0f2f5;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f3f4f6;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -12,103 +12,127 @@ body {
 
 .container {
     background: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
     width: 100%;
-    max-width: 1100px;
+    max-width: 1000px;
     padding: 40px;
 }
 
 .titulo {
-    color: #1a202c;
+    color: #111827;
     text-align: center;
     font-size: 1.8rem;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
     font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
+/* Layout Responsivo dos Controles */
 .painel-controles {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+    align-items: start;
 }
 
 .campo {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    flex: 1;
-    min-width: 220px;
 }
 
 .rotulo {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    color: #718096;
+    color: #6b7280;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .entrada, .campo-hora, .display-resultado {
-    height: 52px;
-    border-radius: 10px;
-    border: 2px solid #edf2f7;
+    height: 56px;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
     background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.entrada { padding: 0 15px; font-size: 1rem; outline: none; }
-.entrada:focus, .campo-hora:focus-within { border-color: #3182ce; }
+.entrada { padding: 0 15px; font-size: 1.1rem; width: 100%; outline: none; }
+.entrada:focus, .campo-hora:focus-within { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
 
 .campo-hora { display: flex; align-items: center; padding: 0 15px; gap: 10px; }
-.entrada-hora { border: none; outline: none; font-size: 1.1rem; width: 100%; font-family: monospace; }
+.icone { font-size: 1.2rem; filter: grayscale(100%); opacity: 0.6; }
+.entrada-hora { border: none; outline: none; font-size: 1.1rem; width: 100%; font-family: 'Courier New', monospace; color: #1f2937; background: transparent; }
 
+/* Previsão de Saída */
 .previsao-saida {
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.85rem;
-    color: #4a5568;
-    background: #f7fafc;
-    padding: 8px 12px;
+    color: #374151;
+    background: #eff6ff;
+    padding: 10px 12px;
     border-radius: 8px;
-    border-left: 4px solid #3182ce;
+    border-left: 4px solid #3b82f6;
+    margin-top: 5px;
 }
+.texto-previsao { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* Resultado */
 .display-resultado {
-    background: #ebf8ff;
-    border-color: #bee3f8;
+    background: #f0f9ff;
+    border-color: #bae6fd;
     display: flex;
     align-items: center;
     padding: 0 15px;
 }
+.texto-resultado { font-size: 1.3rem; font-weight: 700; color: #0369a1; flex: 1; font-family: 'Courier New', monospace; text-align: center; }
 
-.texto-resultado { font-size: 1.2rem; font-weight: 700; color: #2b6cb0; flex: 1; font-family: monospace; }
-
-.btn-copiar, .btn-copiar-mini { background: none; border: none; cursor: pointer; font-size: 1.1rem; transition: transform 0.1s; }
-.btn-copiar-mini { font-size: 0.9rem; }
-.btn-copiar:active, .btn-copiar-mini:active { transform: scale(0.9); }
+/* Botões */
+.btn-copiar, .btn-copiar-mini { background: none; border: none; cursor: pointer; font-size: 1.2rem; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; }
+.btn-copiar-mini { font-size: 1rem; padding: 4px; border-radius: 4px; margin-left: 5px; }
+.btn-copiar:hover, .btn-copiar-mini:hover { background: rgba(0,0,0,0.05); }
+.btn-copiar:active { transform: scale(0.9); }
 
 .btn-calcular {
     width: 100%;
-    height: 55px;
-    background: #3182ce;
+    height: 60px;
+    background: #2563eb;
     color: white;
     border: none;
     border-radius: 12px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
     margin-bottom: 40px;
+    transition: background 0.2s;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
 }
-.btn-calcular:hover { background: #2b6cb0; }
+.btn-calcular:hover { background: #1d4ed8; }
 
-.secao-historico { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #edf2f7; }
-.cabecalho-historico { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.subtitulo { font-size: 0.85rem; color: #718096; }
-.btn-limpar-historico { background: none; border: none; color: #e53e3e; cursor: pointer; font-size: 0.8rem; }
+/* Histórico */
+.secao-historico { background: white; border-radius: 16px; padding: 25px; border: 1px solid #e5e7eb; }
+.cabecalho-historico { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.subtitulo { font-size: 0.9rem; color: #6b7280; font-weight: 700; }
+.btn-limpar-historico { background: none; border: 1px solid #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+.btn-limpar-historico:hover { background: #fef2f2; }
 
-.tabela { width: 100%; border-collapse: collapse; }
-.tabela th { text-align: left; padding: 12px; font-size: 0.7rem; color: #a0aec0; border-bottom: 2px solid #f7fafc; }
-.tabela td { padding: 12px; font-size: 0.9rem; color: #4a5568; border-bottom: 1px solid #f7fafc; }
-.btn-excluir { color: #fc8181; background: none; border: none; cursor: pointer; font-size: 1rem; }
-.vazio { text-align: center; color: #a0aec0; padding: 30px !important; }
+/* Tabela Responsiva */
+.tabela-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tabela { width: 100%; border-collapse: collapse; min-width: 500px; /* Garante que a tabela não quebre em mobile */ }
+.tabela th { text-align: left; padding: 12px; font-size: 0.75rem; color: #9ca3af; border-bottom: 2px solid #f3f4f6; font-weight: 600; }
+.tabela td { padding: 12px; font-size: 0.95rem; color: #374151; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
+.btn-excluir { color: #f87171; background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 5px; }
+.btn-excluir:hover { color: #ef4444; }
+.vazio { text-align: center; color: #9ca3af; padding: 30px !important; }
+
+/* Mobile Tweaks */
+@media (max-width: 600px) {
+    .container { padding: 20px; }
+    .titulo { font-size: 1.5rem; }
+    .painel-controles { grid-template-columns: 1fr; gap: 15px; }
+    .previsao-saida { flex-direction: row; }
+}
